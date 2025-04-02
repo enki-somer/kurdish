@@ -30,11 +30,24 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
+      # Fix the server.js file to work with GitHub Pages
+      - name: Create static fallback responses
+        run: |
+          mkdir -p docs/webhooks/rest
+          cat > docs/webhooks/rest/webhook.json << 'EOL'
+          [
+            {
+              "recipient_id": "web_user",
+              "text": "سڵاو! بەخێربێی بۆ بۆتی کوردی. چۆن دەتوانم یارمەتیت بدەم؟"
+            }
+          ]
+          EOL
+
       # Upload artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "."
+          path: "docs"
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
