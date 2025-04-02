@@ -2,6 +2,12 @@
 
 A conversational AI chatbot built with Rasa that speaks Kurdish, collects user information (name, phone, address), and stores it in a JSON file.
 
+## Live Demo
+
+🔗 **[Try the Kurdish Chatbot on GitHub Pages](https://enki-somer.github.io/kurdish/)**
+
+_Note: You'll need to deploy a Rasa server separately and connect to it by entering the server URL in the interface._
+
 ## Features
 
 - 🗣️ Replies instantly to customers in Kurdish
@@ -9,11 +15,15 @@ A conversational AI chatbot built with Rasa that speaks Kurdish, collects user i
 - 💾 Stores collected information in a JSON file
 - 🌐 Can be deployed on GitHub Pages for public access
 - 🧠 Natural language understanding for flexible user inputs
+- 🚀 Automated deployment via GitHub Actions
 
 ## Project Structure
 
 ```
 .
+├── .github/                  # GitHub specific configurations
+│   └── workflows/            # GitHub Actions workflows
+│       └── deploy.yml        # Workflow for deploying to GitHub Pages
 ├── actions/                  # Custom actions for the chatbot
 │   └── actions.py            # Action to store user data
 ├── data/                     # Training data for the chatbot
@@ -27,6 +37,9 @@ A conversational AI chatbot built with Rasa that speaks Kurdish, collects user i
 ├── domain.yml                # Domain specification (intents, entities, slots, actions)
 ├── endpoints.yml             # Endpoints configuration
 ├── index.html                # Web interface for GitHub Pages deployment
+├── GITHUB_PAGES_DEPLOYMENT.md# Detailed deployment guide
+├── Procfile                  # Configuration for Heroku deployment
+├── runtime.txt               # Python runtime for Heroku
 ├── README.md                 # This documentation
 └── user_data.json            # Stored user data (generated)
 ```
@@ -93,14 +106,27 @@ rasa run --enable-api --cors "*" --debug
 
 ## Deployment
 
-### Deploying to GitHub Pages
+### Deploying to GitHub Pages with GitHub Actions
 
-1. Create a new GitHub repository.
-2. Push your code to the repository.
-3. Enable GitHub Pages in your repository settings.
-4. Set the source to the main branch and the root folder.
+This project includes a GitHub Actions workflow that automatically deploys the chatbot interface to GitHub Pages whenever changes are pushed to the main branch.
 
-For the web interface to communicate with your Rasa server, you'll need to deploy the Rasa API server to a hosting service like Heroku, Render, or Railway.
+1. Fork or clone this repository
+2. Push your changes to the main branch
+3. GitHub Actions will automatically build and deploy the site
+4. Visit your GitHub Pages URL (usually `https://[your-username].github.io/kurdish/`)
+
+To view the deployment status, check the Actions tab in your repository.
+
+### Connecting to a Rasa Backend
+
+For the web interface to function, you need to connect it to a running Rasa server:
+
+1. Deploy your Rasa backend to a cloud provider (Heroku, Render, Railway, etc.)
+2. Ensure your server is configured with CORS enabled: `rasa run --enable-api --cors "*"`
+3. On the chatbot interface, enter your server URL (e.g., `https://your-app.herokuapp.com/webhooks/rest/webhook`)
+4. Click "Connect" to establish the connection
+
+For detailed deployment instructions, see the [GitHub Pages Deployment Guide](GITHUB_PAGES_DEPLOYMENT.md).
 
 ### Alternative Deployment Options
 
@@ -198,3 +224,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 Created with ❤️ for Kurdish speakers everywhere.
+
+## Continuous Integration/Continuous Deployment
+
+This project uses GitHub Actions for CI/CD, which automatically:
+
+1. Deploys the web interface to GitHub Pages when you push to the main branch
+2. Makes updates available immediately to end users
+
+To customize the CI/CD pipeline, edit the workflow file in `.github/workflows/deploy.yml`.
