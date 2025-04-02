@@ -1,0 +1,164 @@
+version: "3.1"
+
+nlu:
+  - intent: greet
+    examples: |
+      - سڵاو
+      - باش
+      - چۆنی
+      - بەخێربێیت
+      - ڕۆژ باش
+      - ئێوارە باش
+      - بەیانی باش
+      - سڵاو بۆ تۆ
+      - سڵاو برا
+      - سڵاو خوشک
+      - چاک و چۆنی
+      - hey
+      - hello
+      - hi
+      - hello there
+      - good morning
+      - good evening
+
+  - intent: goodbye
+    examples: |
+      - خوا حافیز
+      - بە خوات دەسپێرم
+      - شەو باش
+      - ڕۆژێکی خۆش
+      - بای
+      - بە خواتان دەسپێرم
+      - تا دوایی
+      - bye
+      - goodbye
+      - see you around
+      - bye bye
+      - see you later
+
+  - intent: affirm
+    examples: |
+      - بەڵێ
+      - ب
+      - بێگومان
+      - دەی باشە
+      - بەدڵنیاییەوە
+      - دروستە
+      - ڕاستە
+      - yes
+      - y
+      - indeed
+      - of course
+      - that sounds good
+      - correct
+
+  - intent: deny
+    examples: |
+      - نا
+      - ن
+      - هەرگیز
+      - وا بیر ناکەمەوە
+      - ئەوەم پێ خۆش نییە
+      - بێ هودەیە
+      - بە هیچ شێوەیەک
+      - no
+      - n
+      - never
+      - I don't think so
+      - don't like that
+      - no way
+      - not really
+
+  - intent: provide_name
+    examples: |
+      - ناوم [ئاری](name)ـە
+      - من [ڕۆژان](name)م
+      - [ئاکۆ](name)
+      - [دیلان](name) ناومە
+      - ناوەکەم [هێلین](name)ـە
+      - [ئاڤان](name) ناوی منە
+      - من [ڕێبوار](name)م
+      - ناوم [شادان](name)ـە
+      - پێم دەڵێن [شاناز](name)
+      - خەڵکی پێم دەڵێن [ئاکار](name)
+      - دەتوانیت بانگم بکەیت [بەهار](name)
+      - [کارۆ](name) ناومە
+      - my name is [John](name)
+      - I am [Mary](name)
+      - people call me [Robert](name)
+      - it's [Lisa](name)
+      - usually people call me [Greg](name)
+      - my name is [David](name)
+      - [Kevin](name)
+      - [Kelly](name) is my name
+
+  - intent: provide_phone
+    examples: |
+      - ژمارە تەلەفۆنەکەم [٠٧٥٠١٢٣٤٥٦٧](phone) ـە
+      - [٠٧٧٠١٢٣٤٥٦٧](phone)
+      - ژمارەکەم [٠٧٥١٩٨٧٦٥٤٣](phone) ـە
+      - [٠٧٧٢٤٤٣٣٢٢١](phone) ژمارەی منە
+      - [٠٧٥٠١١٢٢٣٣٤](phone)
+      - ژمارەکەم ئەمەیە [٠٧٨٠٥٥٤٤٣٣٢](phone)
+      - ژمارەم [07501234567](phone)
+      - [07701234567](phone)
+      - my number is [07519876543](phone)
+      - you can reach me at [07724433221](phone)
+      - [07501122334](phone) is my number
+      - my phone is [07805544332](phone)
+
+  - intent: provide_address
+    examples: |
+      - ناونیشانەکەم [گەڕەکی سەروەری، کۆڵانی ٤٥، خانووی ١٢، سلێمانی](address)
+      - لە [شاری هەولێر، شەقامی ١٠٠ مەتری، تەنیشت پارکی شار](address) دەژیم
+      - [گەڕەکی ڕزگاری، کۆڵانی ٣، خانووی ٧، سلێمانی](address)
+      - ناونیشانم [کەرکوک، گەڕەکی ئازادی، نزیک قوتابخانەی دیاری](address) ـە
+      - [گەڕەکی مامۆستایان، شەقامی ٢٠، ماڵی ژمارە ١٥، دهۆک](address)
+      - [گەڕەکی بەرزنجە، کۆڵانی ٥، خانووی ٢٢، هەولێر](address)
+      - من لە [شەقامی سالم، نزیک پارکی گشتی، سلێمانی](address) دەژیم
+      - I live at [123 Main Street, Apt 4, City](address)
+      - my address is [45 Park Avenue, Building 7, Town](address)
+      - [22 Oak Street, City Center](address)
+      - the address is [Village Square, House 9, Rural Area](address)
+
+  - intent: ask_for_info
+    examples: |
+      - زانیاری زیاترم دەوێت
+      - دەتوانم پرسیارێک بکەم؟
+      - دەتوانیت یارمەتیم بدەیت؟
+      - هەندێک زانیاریم دەوێت
+      - پێویستم بە یارمەتییە
+      - چۆن دەتوانم یارمەتی وەربگرم؟
+      - can you help me?
+      - I need some information
+      - I have a question
+      - how can I get help?
+
+  - intent: thank
+    examples: |
+      - سوپاس
+      - زۆر سوپاس
+      - مەمنوونم
+      - سوپاست دەکەم
+      - دەستخۆش
+      - زۆر باشە
+      - دەستت خۆش بێت
+      - thanks
+      - thank you
+      - many thanks
+      - I appreciate it
+      - thanks a lot
+
+  - intent: bot_challenge
+    examples: |
+      - تۆ مرۆڤیت؟
+      - تۆ بۆتیت؟
+      - ئایا من لەگەڵ بۆتێک قسە دەکەم؟
+      - ئایا من لەگەڵ مرۆڤێک قسە دەکەم؟
+      - تۆ ڕۆبۆتیت یان مرۆڤ؟
+      - کێیت تۆ؟
+      - are you a bot?
+      - are you a human?
+      - am I talking to a bot?
+      - am I talking to a human?
+      - who are you?

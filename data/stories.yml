@@ -1,0 +1,59 @@
+version: "3.1"
+
+stories:
+  - story: happy path - collect user info
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: provide_name
+        entities:
+          - name: "ئاری"
+      - action: utter_ask_phone
+      - intent: provide_phone
+        entities:
+          - phone: "٠٧٥٠١٢٣٤٥٦٧"
+      - action: utter_ask_address
+      - intent: provide_address
+        entities:
+          - address: "سلێمانی"
+      - action: action_store_user_info
+      - action: utter_confirmation
+      - intent: thank
+      - action: utter_thank
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: user needs to be asked for name
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: ask_for_info
+      - action: utter_ask_name
+      - intent: provide_name
+        entities:
+          - name: "ڕۆژان"
+      - action: utter_ask_phone
+      - intent: provide_phone
+        entities:
+          - phone: "٠٧٧٠١٢٣٤٥٦٧"
+      - action: utter_ask_address
+      - intent: provide_address
+        entities:
+          - address: "هەولێر"
+      - action: action_store_user_info
+      - action: utter_confirmation
+      - intent: thank
+      - action: utter_thank
+
+  - story: user asks if bot is human
+    steps:
+      - intent: bot_challenge
+      - action: utter_iamabot
+      - intent: provide_name
+        entities:
+          - name: "کارۆ"
+      - action: utter_ask_phone
+      - intent: provide_phone
+        entities:
+          - phone: "٠٧٧٢٤٤٣٣٢٢١"
+      - action: utter_ask_address

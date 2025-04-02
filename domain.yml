@@ -1,0 +1,70 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - provide_name
+  - provide_phone
+  - provide_address
+  - ask_for_info
+  - thank
+  - bot_challenge
+
+entities:
+  - name
+  - phone
+  - address
+
+slots:
+  name:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: name
+  phone:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: phone
+  address:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: address
+
+responses:
+  utter_greet:
+    - text: "سڵاو! بەخێربێی بۆ بۆتی پرسیار و وەڵام. ناوت چییە؟" # Hello! Welcome to the Q&A bot. What's your name?
+
+  utter_ask_name:
+    - text: "تکایە ناوی خۆت بنووسە" # Please write your name
+
+  utter_ask_phone:
+    - text: "زۆر سوپاس {name}. ژمارەی تەلەفۆنەکەت چییە؟" # Thank you {name}. What's your phone number?
+
+  utter_ask_address:
+    - text: "زۆر باشە. ئێستا ناونیشانەکەت بنووسە تکایە" # Very good. Now please write your address
+
+  utter_confirmation:
+    - text: "زۆر سوپاس بۆ زانیارییەکانت! ئێمە هەموو شتێکمان تۆمار کرد. ناو: {name}, ژمارەی تەلەفۆن: {phone}, ناونیشان: {address}" # Thank you for your information! We've recorded everything. Name: {name}, Phone: {phone}, Address: {address}
+
+  utter_thank:
+    - text: "بەخێربێیت!" # You're welcome!
+
+  utter_goodbye:
+    - text: "خواحافیز، ڕۆژێکی خۆشت هەبێت!" # Goodbye, have a nice day!
+
+  utter_iamabot:
+    - text: "من بۆتێکم کە بە زمانی کوردی قسە دەکەم و بە Rasa کار دەکەم." # I am a bot that speaks Kurdish and works with Rasa
+
+  utter_fallback:
+    - text: "ببوورە، من لە مەبەستەکەت تێنەگەیشتم. دەتوانیت بە شێوەیەکی تر ڕوونی بکەیتەوە؟" # Sorry, I didn't understand. Can you clarify differently?
+
+actions:
+  - action_store_user_info
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
