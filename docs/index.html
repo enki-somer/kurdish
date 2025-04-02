@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurdish Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f1f1f1;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .chat-container {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            margin: 0 auto;
+        }
+        .chat-header {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            direction: rtl;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            direction: rtl;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .user-message {
+            justify-content: flex-end;
+        }
+        .bot-message {
+            justify-content: flex-start;
+        }
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 70%;
+        }
+        .user-message .message-content {
+            background: #E3F2FD;
+        }
+        .bot-message .message-content {
+            background: #F1F1F1;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            direction: rtl;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            text-align: right;
+        }
+        #send-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #send-button:hover {
+            background: #45a049;
+        }
+        .config-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .config-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', monospace;
+        }
+        .deployment-options {
+            margin-top: 20px;
+        }
+        .deployment-option {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .deployment-option h3 {
+            margin-top: 0;
+        }
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            .container {
+                padding: 10px;
+            }
+            .tab {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'chat-tab')">Kurdish Chatbot</div>
+            <div class="tab" onclick="openTab(event, 'setup-tab')">Setup Instructions</div>
+            <div class="tab" onclick="openTab(event, 'deployment-tab')">Deployment Guide</div>
+        </div>
+        
+        <div id="chat-tab" class="tab-content active">
+            <div class="config-container">
+                <h3>Rasa Server Configuration</h3>
+                <p>Enter your Rasa server URL to connect to the chatbot:</p>
+                <input type="text" id="rasa-url" class="config-input" placeholder="https://your-rasa-server-url.com/webhooks/rest/webhook">
+                <button class="btn" id="connect-btn">Connect</button>
+                <p id="connection-status">Status: Not connected</p>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-header">
+                    بۆتی کوردی - Kurdish Chatbot
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">سڵاو! بەخێربێی بۆ بۆتی پرسیار و وەڵام. ناوت چییە؟</div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <button id="send-button">➤</button>
+                    <input type="text" id="message-input" placeholder="پەیامێک بنووسە...">
+                </div>
+            </div>
+        </div>
+        
+        <div id="setup-tab" class="tab-content">
+            <h2>Setup Instructions</h2>
+            <p>Follow these steps to set up your Kurdish Rasa chatbot:</p>
+            
+            <h3>1. Clone the Repository</h3>
+            <pre><code>git clone https://github.com/yourusername/kurdish-chatbot.git
+cd kurdish-chatbot</code></pre>
+            
+            <h3>2. Set Up Python Environment</h3>
+            <pre><code># Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+# OR
+source .venv/bin/activate  # macOS/Linux
+
+# Install dependencies
+pip install rasa</code></pre>
+            
+            <h3>3. Train the Model</h3>
+            <pre><code>rasa train</code></pre>
+            
+            <h3>4. Start the Action Server</h3>
+            <pre><code>rasa run actions</code></pre>
+            
+            <h3>5. Start the Rasa Server</h3>
+            <pre><code>rasa run --enable-api --cors "*"</code></pre>
+            
+            <h3>6. Connect to the Chatbot</h3>
+            <p>Go to the "Kurdish Chatbot" tab, enter your Rasa server URL (typically http://localhost:5005/webhooks/rest/webhook if running locally) and click "Connect".</p>
+        </div>
+        
+        <div id="deployment-tab" class="tab-content">
+            <h2>Deployment Guide</h2>
+            <p>There are several options for deploying your Kurdish Rasa chatbot:</p>
+            
+            <div class="deployment-options">
+                <div class="deployment-option">
+                    <h3>Option 1: GitHub Pages + Cloud Hosted Rasa</h3>
+                    <p>This is the current approach where the HTML/JS frontend is hosted on GitHub Pages and connects to a Rasa server hosted elsewhere.</p>
+                    <ol>
+                        <li>Push this code to a GitHub repository</li>
+                        <li>Enable GitHub Pages in repository settings</li>
+                        <li>Deploy Rasa to a cloud service (see below)</li>
+                        <li>Update the Rasa server URL in the chatbot interface</li>
+                    </ol>
+                </div>
+                
+                <div class="deployment-option">
+                    <h3>Option 2: Heroku Deployment</h3>
+                    <p>Deploy the entire Rasa application to Heroku:</p>
+                    <ol>
+                        <li>Create a Heroku account and install the Heroku CLI</li>
+                        <li>Add a Procfile to your project with these contents:</li>
+                        <pre><code>web: python -m rasa run --enable-api --cors "*" --port $PORT
+worker: python -m rasa run actions</code></pre>
+                        <li>Deploy to Heroku:</li>
+                        <pre><code>heroku create kurdish-chatbot
+git push heroku main</code></pre>
+                    </ol>
+                </div>
+                
+                <div class="deployment-option">
+                    <h3>Option 3: Render.com Deployment</h3>
+                    <p>Render.com offers a simple way to deploy Rasa:</p>
+                    <ol>
+                        <li>Create a render.com account</li>
+                        <li>Create a new Web Service pointing to your GitHub repository</li>
+                        <li>Set build command: <code>pip install -U rasa</code></li>
+                        <li>Set start command: <code>rasa run --enable-api --cors "*" --port $PORT</code></li>
+                        <li>Create a second service for the action server</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <h3>Troubleshooting Deployment</h3>
+            <ul>
+                <li>Ensure CORS is properly configured on your Rasa server</li>
+                <li>Check that the URL you're using to connect to Rasa is correct</li>
+                <li>Verify that both the main Rasa server and action server are running</li>
+                <li>If using GitHub Pages, make sure you're connecting to a secure (HTTPS) Rasa endpoint</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const rasaUrlInput = document.getElementById('rasa-url');
+            const connectButton = document.getElementById('connect-btn');
+            const connectionStatus = document.getElementById('connection-status');
+            
+            let RASA_SERVER_URL = "";
+            let isConnected = false;
+            
+            // Use the relative path to the webhook API
+            RASA_SERVER_URL = "webhooks/rest/webhook";
+            
+            // Function to add a message to the chat
+            function addMessage(message, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = message;
+                
+                messageDiv.appendChild(messageContent);
+                messagesContainer.appendChild(messageDiv);
+                
+                // Scroll to the bottom of the messages
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            // Function to send a message to Rasa
+            async function sendMessageToRasa(message) {
+                try {
+                    const response = await fetch(RASA_SERVER_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            sender: "web_user",
+                            message: message
+                        }),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Display the bot's response
+                    if (data && data.length > 0) {
+                        data.forEach(msg => {
+                            if (msg.text) {
+                                addMessage(msg.text, false);
+                            }
+                        });
+                    } else {
+                        addMessage("ببوورە، من لە مەبەستەکەت تێنەگەیشتم. دەتوانیت بە شێوەیەکی تر ڕوونی بکەیتەوە؟", false);
+                    }
+                } catch (error) {
+                    console.error('Error sending message to Rasa:', error);
+                    addMessage("ببوورە، کێشەیەکی تەکنیکی هەیە. تکایە دواتر هەوڵ بدەرەوە.", false);
+                }
+            }
+            
+            // Handle sending message
+            function handleSendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    messageInput.value = '';
+                    sendMessageToRasa(message);
+                }
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', handleSendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+        });
+        
+        // Tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+            }
+            
+            // Remove "active" class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add "active" class
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html> 

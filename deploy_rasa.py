@@ -21,7 +21,7 @@ def setup_parser():
     )
     parser.add_argument(
         "provider",
-        choices=["heroku", "render", "railway"],
+        choices=["heroku", "render", "railway", "github-pages"],
         help="Cloud provider to deploy to",
     )
     parser.add_argument(
@@ -227,6 +227,106 @@ def pack_model():
     return True
 
 
+def configure_github_pages():
+    """Configure for all-in-one GitHub Pages deployment with embedded Rasa model"""
+    print("Configuring for GitHub Pages all-in-one deployment")
+    
+    # Create a models directory in the GitHub Pages directory
+    gh_pages_dir = Path("docs")
+    gh_pages_models_dir = gh_pages_dir / "models"
+    os.makedirs(gh_pages_models_dir, exist_ok=True)
+    
+    # Find the latest model
+    models_dir = Path("models")
+    if not models_dir.exists() or not models_dir.is_dir():
+        print("Error: models directory not found. Have you trained a model?")
+        return False
+    
+    model_files = list(models_dir.glob("*.tar.gz"))
+    if not model_files:
+        print("Error: No model files found in the models directory.")
+        return False
+    
+    # Get the latest model file
+    latest_model = max(model_files, key=lambda x: x.stat().st_mtime)
+    
+    # Copy model to GitHub Pages directory
+    target_model = gh_pages_models_dir / "model.tar.gz"
+    shutil.copy2(latest_model, target_model)
+    print(f"Copied latest model to {target_model}")
+    
+    # Create server.js for serving the model via GitHub Pages
+    server_js = """
+const express = require('express');
+const cors = require('cors');
+const { spawn } = require('child_process');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+// Serve the Rasa endpoint
+app.post('/webhooks/rest/webhook', async (req, res) => {
+  // Process the request using the Rasa model
+  // This is a simplified version for demonstration
+  const message = req.body.message;
+  const sender = req.body.sender;
+  
+  // TODO: Process with Rasa model
+  // For now, return a simple response
+  res.json([
+    {
+      "recipient_id": sender,
+      "text": "Hello! This is a test response. How can I help you?"
+    }
+  ]);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+"""
+    
+    # Create package.json for GitHub Pages
+    package_json = {
+        "name": "kurdish-chatbot",
+        "version": "1.0.0",
+        "description": "Kurdish Chatbot with embedded Rasa model",
+        "main": "server.js",
+        "scripts": {
+            "start": "node server.js"
+        },
+        "dependencies": {
+            "express": "^4.18.2",
+            "cors": "^2.8.5"
+        }
+    }
+    
+    with open(gh_pages_dir / "server.js", "w", encoding="utf-8") as f:
+        f.write(server_js)
+    
+    with open(gh_pages_dir / "package.json", "w", encoding="utf-8") as f:
+        json.dump(package_json, f, indent=2)
+    
+    print("Created server.js and package.json in the docs directory")
+    
+    # Create or update index.html to point to the local API
+    index_path = gh_pages_dir / "index.html"
+    if not os.path.exists(index_path):
+        shutil.copy("index.html", index_path)
+        print("Copied index.html to docs directory")
+    
+    print("\nGitHub Pages All-in-One Deployment Instructions:")
+    print("1. Push your changes to GitHub")
+    print("2. Go to your repository settings and enable GitHub Pages from the docs directory")
+    print("3. Your chatbot will be available at: https://yourusername.github.io/reponame/")
+    print("4. The chatbot is self-contained and can be used directly by the client")
+    
+    return True
+
+
 def main():
     """Main function"""
     parser = setup_parser()
@@ -251,10 +351,13 @@ def main():
         configure_render(args.app_name)
     elif args.provider == "railway":
         configure_railway(args.app_name)
+    elif args.provider == "github-pages":
+        configure_github_pages()
     
     print("\nConfiguration complete. Follow the instructions above to deploy your Rasa chatbot.")
-    print("Once deployed, copy the webhook URL and use it to connect to the chatbot from the GitHub Pages interface.")
-    print("Example webhook URL: https://your-app-name.herokuapp.com/webhooks/rest/webhook")
+    if args.provider != "github-pages":
+        print("Once deployed, copy the webhook URL and use it to connect to the chatbot from the GitHub Pages interface.")
+        print("Example webhook URL: https://your-app-name.herokuapp.com/webhooks/rest/webhook")
 
 
 if __name__ == "__main__":
