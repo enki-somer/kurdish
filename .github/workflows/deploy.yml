@@ -19,14 +19,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
 
       - name: Prepare static files
         run: |
-          # Ensure docs/webhooks/rest directory exists
+          # Ensure docs directory exists
+          ls -la
+          find . -type d
+
+          # Copy the docs directory if it exists
+          if [ -d "docs" ]; then
+            echo "Docs directory exists"
+          else
+            echo "Creating docs directory"
+            mkdir -p docs
+            cp -r * docs/ || true
+          fi
+
+          # Create webhook response directory
           mkdir -p docs/webhooks/rest
 
           # Create a static response file
@@ -39,10 +52,33 @@ jobs:
           ]
           EOL
 
+          # List contents to verify
+          echo "Contents of docs directory:"
+          ls -la docs/
+
+          # Ensure index.html exists
+          if [ ! -f "docs/index.html" ]; then
+            echo "Creating simple index.html"
+            cat > docs/index.html << 'EOL'
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Kurdish Chatbot</title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body>
+              <h1>Kurdish Chatbot</h1>
+              <p>This is a demonstration of the Kurdish language chatbot.</p>
+            </body>
+            </html>
+            EOL
+          fi
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: "./docs"
+          path: "docs"
 
   deploy:
     environment:
@@ -53,4 +89,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
